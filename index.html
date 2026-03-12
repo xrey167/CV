@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Darius - Tech CV & Project Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,21 +14,35 @@
         }
         
         :root {
-            --primary: #2563eb;
-            --secondary: #7c3aed;
-            --accent: #06b6d4;
-            --dark: #0f172a;
-            --gray: #475569;
-            --light: #f1f5f9;
-            --success: #10b981;
+            --primary:   #2d8b5a;   /* tanne-400 */
+            --secondary: #1a5c3a;   /* tanne-500 */
+            --accent:    #4daa77;   /* tanne-300 */
+            --dark:      #0a0a0a;   /* near-black */
+            --gray:      #a0a0a0;
+            --light:     #f5f5f5;
+            --success:   #2d8b5a;
+
+            /* extra tanne tokens */
+            --tanne-600:      #0d3b2e;
+            --surface-glass:  rgba(13, 59, 46, 0.08);
+            --border-glass:   rgba(45, 139, 90, 0.15);
+            --border-hover:   rgba(45, 139, 90, 0.30);
+            --glow-sm:        0 0 20px rgba(45, 139, 90, 0.15);
+            --glow-md:        0 0 30px rgba(45, 139, 90, 0.20);
+            --glow-lg:        0 20px 50px rgba(45, 139, 90, 0.25);
         }
         
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            color: #e2e8f0;
+            font-family: 'Space Grotesk', 'Segoe UI', system-ui, sans-serif;
+            background: #0a0a0a;
+            color: #f5f5f5;
             line-height: 1.6;
             overflow-x: hidden;
+        }
+
+        ::selection {
+            background: rgba(45, 139, 90, 0.3);
+            color: #fff;
         }
         
         .container {
@@ -61,7 +77,8 @@
             font-size: 4rem;
             font-weight: bold;
             color: white;
-            box-shadow: 0 20px 60px rgba(37, 99, 235, 0.4);
+            box-shadow: 0 20px 60px rgba(45, 139, 90, 0.35),
+                        0 0 0 3px rgba(45, 139, 90, 0.20);
             animation: float 3s ease-in-out infinite;
         }
         
@@ -73,10 +90,12 @@
         .profile-info h1 {
             font-size: 3rem;
             margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, var(--accent), var(--primary));
+            background: linear-gradient(135deg, #4daa77, #2d8b5a);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            text-shadow: none;
+            filter: drop-shadow(0 0 24px rgba(45, 139, 90, 0.35));
         }
         
         .profile-info .tagline {
@@ -93,30 +112,34 @@
         }
         
         .stat-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
+            background: var(--surface-glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             padding: 1rem 2rem;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            border: 1px solid var(--border-glass);
             text-align: center;
-            transition: all 0.3s;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: var(--glow-sm);
         }
-        
+
         .stat-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary);
-            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3);
+            transform: translateY(-4px);
+            border-color: var(--border-hover);
+            box-shadow: var(--glow-md);
         }
         
         .stat-number {
             font-size: 2rem;
-            font-weight: bold;
+            font-weight: 700;
             color: var(--accent);
+            letter-spacing: -0.02em;
         }
-        
+
         .stat-label {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: var(--gray);
+            font-weight: 500;
         }
         
         /* Navigation Tabs */
@@ -129,26 +152,29 @@
         }
         
         .tab-button {
-            padding: 0.8rem 2rem;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            color: #e2e8f0;
+            padding: 0.65rem 1.5rem;
+            background: var(--surface-glass);
+            border: 1px solid var(--border-glass);
+            border-radius: 9999px;
+            color: var(--gray);
             cursor: pointer;
-            transition: all 0.3s;
-            font-size: 1rem;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            font-size: 0.9rem;
             font-weight: 500;
+            font-family: inherit;
         }
-        
+
         .tab-button:hover {
-            background: rgba(37, 99, 235, 0.2);
-            border-color: var(--primary);
+            background: rgba(45, 139, 90, 0.10);
+            border-color: var(--border-hover);
+            color: var(--accent);
         }
-        
+
         .tab-button.active {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: var(--primary);
             border-color: var(--primary);
-            box-shadow: 0 5px 20px rgba(37, 99, 235, 0.4);
+            color: #ffffff;
+            box-shadow: 0 0 20px rgba(45, 139, 90, 0.30);
         }
         
         /* Content Sections */
@@ -194,13 +220,15 @@
         
         .timeline-content {
             width: 45%;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
+            background: var(--surface-glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             padding: 1.5rem;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            border: 1px solid var(--border-glass);
             position: relative;
-            transition: all 0.3s;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: var(--glow-sm);
         }
         
         .timeline-item:nth-child(odd) .timeline-content {
@@ -208,9 +236,9 @@
         }
         
         .timeline-content:hover {
-            transform: scale(1.02);
-            border-color: var(--primary);
-            box-shadow: 0 10px 40px rgba(37, 99, 235, 0.3);
+            transform: translateY(-3px);
+            border-color: var(--border-hover);
+            box-shadow: var(--glow-md);
         }
         
         .timeline-marker {
@@ -256,11 +284,12 @@
         }
         
         .skill-tag {
-            padding: 0.3rem 0.8rem;
-            background: rgba(37, 99, 235, 0.2);
-            border: 1px solid var(--primary);
-            border-radius: 6px;
-            font-size: 0.85rem;
+            padding: 0.25rem 0.75rem;
+            background: rgba(45, 139, 90, 0.10);
+            border: 1px solid rgba(45, 139, 90, 0.30);
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 500;
             color: var(--accent);
         }
         
@@ -273,18 +302,20 @@
         }
         
         .tech-category {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
+            background: var(--surface-glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             padding: 1.5rem;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s;
+            border-radius: 1rem;
+            border: 1px solid var(--border-glass);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: var(--glow-sm);
         }
-        
+
         .tech-category:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary);
-            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3);
+            transform: translateY(-4px);
+            border-color: var(--border-hover);
+            box-shadow: var(--glow-md);
         }
         
         .tech-category h3 {
@@ -319,8 +350,9 @@
         
         .proficiency-fill {
             height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-            transition: width 0.5s;
+            background: linear-gradient(90deg, var(--secondary), var(--accent));
+            border-radius: 2px;
+            transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
         
         /* Projects Grid */
@@ -332,30 +364,56 @@
         }
         
         .project-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
+            background: var(--surface-glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             padding: 2rem;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s;
+            border-radius: 1rem;
+            border: 1px solid var(--border-glass);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
             overflow: hidden;
+            box-shadow: var(--glow-sm);
         }
-        
+
+        /* Light-sweep on hover (BVS glass-hover-sweep) */
         .project-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                105deg,
+                transparent 40%,
+                rgba(45, 139, 90, 0.06) 45%,
+                rgba(77, 170, 119, 0.10) 50%,
+                rgba(45, 139, 90, 0.06) 55%,
+                transparent 60%
+            );
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .project-card:hover::before {
+            transform: translateX(100%);
+        }
+
+        /* Top accent bar */
+        .project-card::after {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
         }
-        
+
         .project-card:hover {
-            transform: translateY(-10px);
-            border-color: var(--primary);
-            box-shadow: 0 20px 50px rgba(37, 99, 235, 0.4);
+            transform: translateY(-6px);
+            border-color: var(--border-hover);
+            box-shadow: var(--glow-lg);
         }
         
         .project-header {
@@ -389,9 +447,11 @@
         .interactive-timeline {
             margin: 2rem 0;
             padding: 2rem;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--surface-glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 1rem;
+            border: 1px solid var(--border-glass);
         }
         
         .year-selector {
@@ -403,23 +463,27 @@
         }
         
         .year-button {
-            padding: 0.5rem 1.5rem;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 6px;
-            color: #e2e8f0;
+            padding: 0.4rem 1.2rem;
+            background: var(--surface-glass);
+            border: 1px solid var(--border-glass);
+            border-radius: 9999px;
+            color: var(--gray);
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.25s;
+            font-family: inherit;
+            font-size: 0.9rem;
         }
         
         .year-button:hover {
-            background: rgba(37, 99, 235, 0.2);
-            border-color: var(--primary);
+            background: rgba(45, 139, 90, 0.15);
+            border-color: var(--border-hover);
+            color: var(--accent);
         }
-        
+
         .year-button.active {
             background: var(--primary);
             border-color: var(--primary);
+            color: #fff;
         }
         
         /* Download Button */
@@ -432,19 +496,22 @@
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            padding: 1rem 2rem;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 0.9rem 2rem;
+            background: var(--primary);
             color: white;
             text-decoration: none;
-            border-radius: 8px;
+            border-radius: 9999px;
             font-weight: 600;
-            transition: all 0.3s;
-            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.4);
+            font-family: inherit;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 0 20px rgba(45, 139, 90, 0.25);
+            border: 1px solid transparent;
         }
-        
+
         .download-btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(37, 99, 235, 0.6);
+            background: var(--accent);
+            box-shadow: 0 0 32px rgba(45, 139, 90, 0.45);
         }
         
         /* Responsive */
@@ -481,6 +548,94 @@
             }
         }
         
+        /* ─── BVS Signature Elements ─────────────────────────── */
+
+        /* Glow Orb (ambient lighting) */
+        .glow-orb {
+            pointer-events: none;
+            position: fixed;
+            border-radius: 50%;
+            background: rgba(26, 92, 58, 0.18);
+            filter: blur(80px);
+            z-index: 0;
+        }
+
+        .glow-orb-1 {
+            width: 500px;
+            height: 500px;
+            top: -100px;
+            right: -100px;
+        }
+
+        .glow-orb-2 {
+            width: 300px;
+            height: 300px;
+            bottom: 20%;
+            left: -80px;
+        }
+
+        /* Shimmer Divider */
+        .shimmer-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(45, 139, 90, 0.3), transparent);
+            position: relative;
+            overflow: hidden;
+            margin: 0.5rem 0 1.5rem;
+        }
+
+        .shimmer-divider::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 30%;
+            background: linear-gradient(90deg, transparent, rgba(77, 170, 119, 0.8), transparent);
+            animation: shimmer-slide 4s ease-in-out infinite;
+        }
+
+        @keyframes shimmer-slide {
+            0%   { transform: translateX(-100%); }
+            100% { transform: translateX(430%);  }
+        }
+
+        /* Section headings consistent with BVS */
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+            color: var(--light);
+        }
+
+        .section-title span {
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Badge / pill label (like BVS "Venture Capital" badge) */
+        .section-badge {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            padding: 0.3rem 1rem;
+            border: 1px solid rgba(45, 139, 90, 0.30);
+            background: rgba(45, 139, 90, 0.10);
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--accent);
+            letter-spacing: 0.05em;
+        }
+
+        /* Make sure container is above orbs */
+        .container {
+            position: relative;
+            z-index: 1;
+        }
+
         @media (max-width: 640px) {
             .profile-info h1 {
                 font-size: 2rem;
@@ -495,6 +650,10 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
+    <!-- Ambient glow orbs (BVS signature) -->
+    <div class="glow-orb glow-orb-1" aria-hidden="true"></div>
+    <div class="glow-orb glow-orb-2" aria-hidden="true"></div>
+
     <div class="container">
         <header>
             <div class="profile-section">
@@ -526,6 +685,8 @@
             </div>
         </header>
         
+        <div class="shimmer-divider"></div>
+
         <nav class="nav-tabs">
             <button class="tab-button active" onclick="showTab('timeline')">📅 Timeline</button>
             <button class="tab-button" onclick="showTab('tech')">💻 Tech Stack</button>
@@ -691,7 +852,11 @@
         
         <!-- Tech Stack Section -->
         <section id="tech" class="content-section">
-            <h2 style="text-align: center; color: var(--accent); margin-bottom: 2rem; font-size: 2rem;">Technologie Stack</h2>
+            <div style="text-align:center">
+                <span class="section-badge">Werkzeuge &amp; Technologien</span>
+                <h2 class="section-title">Tech <span>Stack</span></h2>
+                <div class="shimmer-divider" style="max-width:300px;margin:0 auto 2rem"></div>
+            </div>
             
             <div class="tech-grid">
                 <div class="tech-category">
@@ -834,7 +999,11 @@
         
         <!-- Projects Section -->
         <section id="projects" class="content-section">
-            <h2 style="text-align: center; color: var(--accent); margin-bottom: 2rem; font-size: 2rem;">Schlüsselprojekte</h2>
+            <div style="text-align:center">
+                <span class="section-badge">Referenzen</span>
+                <h2 class="section-title">Schlüssel<span>projekte</span></h2>
+                <div class="shimmer-divider" style="max-width:300px;margin:0 auto 2rem"></div>
+            </div>
             
             <div class="projects-grid">
                 <div class="project-card">
