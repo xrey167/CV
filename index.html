@@ -640,16 +640,28 @@
             .profile-info h1 {
                 font-size: 2rem;
             }
-            
+
             .projects-grid,
             .tech-grid {
                 grid-template-columns: 1fr;
             }
         }
+
+        /* Circuit background canvas */
+        #circuit-bg {
+            pointer-events: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
+    <!-- Circuit background (BVS signature animation) -->
+    <canvas id="circuit-bg" aria-hidden="true"></canvas>
+
     <!-- Ambient glow orbs (BVS signature) -->
     <div class="glow-orb glow-orb-1" aria-hidden="true"></div>
     <div class="glow-orb glow-orb-2" aria-hidden="true"></div>
@@ -1872,6 +1884,207 @@
                 setTimeout(initPerformanceChart, 100);
             }
         };
+    </script>
+
+    <!-- Circuit background animation (ported from BVS CircuitBackground.tsx) -->
+    <script>
+    (function () {
+        const canvas = document.getElementById('circuit-bg');
+        const ctx = canvas.getContext('2d');
+        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const mouse = { x: -1000, y: -1000 };
+        const data = { nodes: [], traces: [], pulses: [], animId: 0, width: 0, height: 0 };
+
+        function generateCircuitTraces(width, height) {
+            const gridSize = 90;
+            const cols = Math.ceil(width / gridSize);
+            const rows = Math.ceil(height / gridSize);
+            const nodes = [];
+            const traces = [];
+
+            for (let row = 0; row < rows; row++) {
+                for (let col = 0; col < cols; col++) {
+                    if (Math.random() > 0.35) continue;
+                    nodes.push({
+                        x: col * gridSize + (Math.random() - 0.5) * gridSize * 0.3,
+                        y: row * gridSize + (Math.random() - 0.5) * gridSize * 0.3,
+                    });
+                }
+            }
+
+            for (let i = 0; i < nodes.length; i++) {
+                const a = nodes[i];
+                const nearby = nodes
+                    .map((b, j) => ({ node: b, index: j, dist: Math.hypot(b.x - a.x, b.y - a.y) }))
+                    .filter(n => n.index !== i && n.dist < gridSize * 2.5 && n.dist > gridSize * 0.5)
+                    .sort((x, y) => x.dist - y.dist)
+                    .slice(0, Math.random() > 0.5 ? 2 : 1);
+
+                for (const target of nearby) {
+                    const b = target.node;
+                    const path = [{ x: a.x, y: a.y }];
+                    if (Math.random() > 0.5) {
+                        path.push({ x: b.x, y: a.y });
+                        path.push({ x: b.x, y: b.y });
+                    } else {
+                        path.push({ x: a.x, y: b.y });
+                        path.push({ x: b.x, y: b.y });
+                    }
+                    let length = 0;
+                    for (let k = 1; k < path.length; k++) {
+                        length += Math.hypot(path[k].x - path[k-1].x, path[k].y - path[k-1].y);
+                    }
+                    traces.push({ path, length });
+                }
+            }
+            return { nodes, traces };
+        }
+
+        function resizeCanvas() {
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+            const dpr = Math.min(window.devicePixelRatio || 1, 2);
+            canvas.width = w * dpr;
+            canvas.height = h * dpr;
+            canvas.style.width = w + 'px';
+            canvas.style.height = h + 'px';
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+            const gen = generateCircuitTraces(w, h);
+            data.nodes = gen.nodes;
+            data.traces = gen.traces;
+            data.width = w;
+            data.height = h;
+
+            const pulseCount = Math.floor(gen.traces.length * 0.15);
+            data.pulses = Array.from({ length: pulseCount }, () => ({
+                traceIndex: Math.floor(Math.random() * gen.traces.length),
+                progress: Math.random(),
+                speed: 0.001 + Math.random() * 0.002,
+                opacity: 0.3 + Math.random() * 0.5,
+            }));
+        }
+
+        const MOUSE_RADIUS = 200;
+
+        function drawFrame() {
+            const { nodes, traces, pulses, width, height } = data;
+            const mx = mouse.x;
+            const my = mouse.y;
+
+            ctx.clearRect(0, 0, width, height);
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+
+            // Traces
+            for (const trace of traces) {
+                const midIdx = Math.floor(trace.path.length / 2);
+                const mid = trace.path[midIdx];
+                const dist = Math.hypot(mid.x - mx, mid.y - my);
+                const mi = Math.max(0, 1 - dist / MOUSE_RADIUS);
+                ctx.strokeStyle = `rgba(45,139,90,${0.05 + mi * 0.15})`;
+                ctx.lineWidth = 1 + mi * 0.5;
+                ctx.beginPath();
+                ctx.moveTo(trace.path[0].x, trace.path[0].y);
+                for (let i = 1; i < trace.path.length; i++) {
+                    ctx.lineTo(trace.path[i].x, trace.path[i].y);
+                }
+                ctx.stroke();
+            }
+
+            // Nodes
+            for (const node of nodes) {
+                const dist = Math.hypot(node.x - mx, node.y - my);
+                const mi = Math.max(0, 1 - dist / MOUSE_RADIUS);
+                const radius = 2 + mi * 3;
+                if (mi > 0.1) {
+                    const g = ctx.createRadialGradient(node.x, node.y, 0, node.x, node.y, radius * 4);
+                    g.addColorStop(0, `rgba(45,139,90,${mi * 0.25})`);
+                    g.addColorStop(1, 'rgba(45,139,90,0)');
+                    ctx.fillStyle = g;
+                    ctx.fillRect(node.x - radius * 4, node.y - radius * 4, radius * 8, radius * 8);
+                }
+                ctx.fillStyle = `rgba(45,139,90,${0.08 + mi * 0.6})`;
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, radius, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            if (!reduced) {
+                // Cursor glow
+                if (mx > -999) {
+                    const cg = ctx.createRadialGradient(mx, my, 0, mx, my, MOUSE_RADIUS);
+                    cg.addColorStop(0, 'rgba(45,139,90,0.04)');
+                    cg.addColorStop(0.5, 'rgba(45,139,90,0.015)');
+                    cg.addColorStop(1, 'rgba(45,139,90,0)');
+                    ctx.fillStyle = cg;
+                    ctx.fillRect(mx - MOUSE_RADIUS, my - MOUSE_RADIUS, MOUSE_RADIUS * 2, MOUSE_RADIUS * 2);
+                }
+
+                // Animated pulses
+                for (const pulse of pulses) {
+                    const trace = traces[pulse.traceIndex];
+                    if (!trace) continue;
+                    const targetDist = pulse.progress * trace.length;
+                    let traveled = 0;
+                    let px = trace.path[0].x, py = trace.path[0].y;
+                    for (let i = 1; i < trace.path.length; i++) {
+                        const segLen = Math.hypot(
+                            trace.path[i].x - trace.path[i-1].x,
+                            trace.path[i].y - trace.path[i-1].y
+                        );
+                        if (traveled + segLen >= targetDist) {
+                            const t = (targetDist - traveled) / segLen;
+                            px = trace.path[i-1].x + (trace.path[i].x - trace.path[i-1].x) * t;
+                            py = trace.path[i-1].y + (trace.path[i].y - trace.path[i-1].y) * t;
+                            break;
+                        }
+                        traveled += segLen;
+                    }
+                    const pDist = Math.hypot(px - mx, py - my);
+                    const mb = Math.max(0, 1 - pDist / MOUSE_RADIUS) * 0.5;
+                    const eff = pulse.opacity + mb;
+                    const grad = ctx.createRadialGradient(px, py, 0, px, py, 30);
+                    grad.addColorStop(0, `rgba(45,139,90,${eff * 0.6})`);
+                    grad.addColorStop(0.5, `rgba(45,139,90,${eff * 0.15})`);
+                    grad.addColorStop(1, 'rgba(45,139,90,0)');
+                    ctx.fillStyle = grad;
+                    ctx.fillRect(px - 30, py - 30, 60, 60);
+                    ctx.fillStyle = `rgba(77,170,119,${eff * 0.9})`;
+                    ctx.beginPath();
+                    ctx.arc(px, py, 2.5 + mb * 2, 0, Math.PI * 2);
+                    ctx.fill();
+                    pulse.progress += pulse.speed;
+                    if (pulse.progress > 1) {
+                        pulse.progress = 0;
+                        pulse.traceIndex = Math.floor(Math.random() * traces.length);
+                        pulse.speed = 0.001 + Math.random() * 0.002;
+                        pulse.opacity = 0.3 + Math.random() * 0.5;
+                    }
+                }
+            }
+
+            data.animId = requestAnimationFrame(drawFrame);
+        }
+
+        resizeCanvas();
+        data.animId = requestAnimationFrame(drawFrame);
+
+        window.addEventListener('mousemove', function (e) {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+
+        let resizeTimer;
+        window.addEventListener('resize', function () {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function () {
+                cancelAnimationFrame(data.animId);
+                resizeCanvas();
+                data.animId = requestAnimationFrame(drawFrame);
+            }, 150);
+        });
+    })();
     </script>
 </body>
 </html>
