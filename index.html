@@ -197,7 +197,27 @@ header{ text-align:center; padding:4rem 0 2rem; }
   .control-bar{ top:0.6rem; right:0.6rem; }
 }
 
-/* PRINT */
+/* TIMELINE LINK TO PROJECT */
+.timeline-content.linkable{ cursor:pointer; }
+.timeline-content.linkable:hover{ border-color:var(--border-hover); box-shadow:var(--glow-md); }
+.proj-hint{
+  font-size:0.75rem; font-weight:600; color:var(--accent);
+  letter-spacing:0.04em; margin-bottom:0.6rem;
+  opacity:0; transform:translateY(-4px);
+  transition:opacity 0.2s, transform 0.2s;
+  pointer-events:none;
+}
+.timeline-content.linkable:hover .proj-hint{ opacity:1; transform:translateY(0); }
+
+/* PROJECT CARD HIGHLIGHT (after navigate) */
+@keyframes card-flash{
+  0%  { box-shadow: 0 0 0 0 rgba(77,170,119,0.6); }
+  40% { box-shadow: 0 0 0 10px rgba(77,170,119,0.25); }
+  100%{ box-shadow: var(--glow-md); }
+}
+.project-card.highlighted{ animation: card-flash 0.9s ease-out forwards; border-color: var(--accent); }
+
+
 @media print{
   #circuit-bg,.glow-orb,#scroll-progress,#back-to-top,.mobile-nav,.control-bar,.nav-tabs,.filter-bar,.download-section,.shimmer-divider{ display:none !important; }
   html,body{ background:#fff !important; color:#000 !important; }
@@ -301,7 +321,8 @@ header{ text-align:center; padding:4rem 0 2rem; }
     <div class="timeline">
       <div class="timeline-item">
         <div class="timeline-marker"></div>
-        <div class="timeline-content">
+        <div class="timeline-content linkable" onclick="goToProject('proj-trading')">
+          <div class="proj-hint">→ Projekt ansehen</div>
           <div class="job-title">Trader / Analyst</div>
           <div class="company">Kingline GmbH</div>
           <div class="period">Okt. 2023 – Heute</div>
@@ -313,7 +334,8 @@ header{ text-align:center; padding:4rem 0 2rem; }
       </div>
       <div class="timeline-item">
         <div class="timeline-marker"></div>
-        <div class="timeline-content">
+        <div class="timeline-content linkable" onclick="goToProject('proj-bi')">
+          <div class="proj-hint">→ Projekt ansehen</div>
           <div class="job-title">Application Manager &amp; BI</div>
           <div class="company">ECKA Granules / Innobraze / Kymera</div>
           <div class="period">Feb. 2022 – Sept. 2023</div>
@@ -326,7 +348,8 @@ header{ text-align:center; padding:4rem 0 2rem; }
       </div>
       <div class="timeline-item">
         <div class="timeline-marker"></div>
-        <div class="timeline-content">
+        <div class="timeline-content linkable" onclick="goToProject('proj-florapharm')">
+          <div class="proj-hint">→ Projekt ansehen</div>
           <div class="job-title">Projektleiter</div>
           <div class="company">Florapharm</div>
           <div class="period">Juni 2021 – Dez. 2021</div>
@@ -338,7 +361,8 @@ header{ text-align:center; padding:4rem 0 2rem; }
       </div>
       <div class="timeline-item">
         <div class="timeline-marker"></div>
-        <div class="timeline-content">
+        <div class="timeline-content linkable" onclick="goToProject('proj-cosmo')">
+          <div class="proj-hint">→ Projekt ansehen</div>
           <div class="job-title">Consultant</div>
           <div class="company">COSMO CONSULT</div>
           <div class="period">Juni 2018 – Juni 2021 · 3 Jahre</div>
@@ -350,7 +374,8 @@ header{ text-align:center; padding:4rem 0 2rem; }
       </div>
       <div class="timeline-item">
         <div class="timeline-marker"></div>
-        <div class="timeline-content">
+        <div class="timeline-content linkable" onclick="goToProject('proj-ecommerce')">
+          <div class="proj-hint">→ Projekt ansehen</div>
           <div class="job-title">Consultant</div>
           <div class="company">Dynamic Commerce</div>
           <div class="period">Jan. 2018 – Mai 2018 · 5 Monate</div>
@@ -362,7 +387,8 @@ header{ text-align:center; padding:4rem 0 2rem; }
       </div>
       <div class="timeline-item">
         <div class="timeline-marker"></div>
-        <div class="timeline-content">
+        <div class="timeline-content linkable" onclick="goToProject('proj-ifs')">
+          <div class="proj-hint">→ Projekt ansehen</div>
           <div class="job-title">Junior Consultant</div>
           <div class="company">IFS Applications</div>
           <div class="period">Aug. 2017 – Dez. 2017 · 5 Monate</div>
@@ -458,37 +484,37 @@ header{ text-align:center; padding:4rem 0 2rem; }
       <button class="filter-btn" data-filter="ECommerce" onclick="filterProjects(this)">E-Commerce</button>
     </div>
     <div class="projects-grid">
-      <div class="project-card tilt-card" data-tags="Trading,Futures,Algorithmen">
+      <div class="project-card tilt-card" id="proj-trading" data-tags="Trading,Futures,Algorithmen">
         <div class="project-title">Trading &amp; Algorithmus-Entwicklung</div>
         <div class="project-meta">2023 – Heute · Kingline GmbH</div>
         <div class="project-description">Entwicklung automatischer Handelssysteme für Futures. Schwerpunkt auf Rohstoffe, Zinsen und Indizes mit Multi-Strategie-Ansatz.</div>
         <div class="project-tech"><span class="skill-tag">Futures Trading</span><span class="skill-tag">Algorithmen</span><span class="skill-tag">Automatisierung</span><span class="skill-tag">Rohstoffe</span></div>
       </div>
-      <div class="project-card tilt-card" data-tags="BI,BusinessCentral,NAV">
+      <div class="project-card tilt-card" id="proj-bi" data-tags="BI,BusinessCentral,NAV">
         <div class="project-title">BI &amp; Application Management</div>
         <div class="project-meta">2022 – 2023 · Kymera International</div>
         <div class="project-description">Internationales Application Management für Holdings-Gruppe. Einführung Business Central bei Innobraze. BI mit PowerBI und JetReports.</div>
         <div class="project-tech"><span class="skill-tag">Business Central</span><span class="skill-tag">PowerBI</span><span class="skill-tag">JetReports</span><span class="skill-tag">Prozessfertigung</span></div>
       </div>
-      <div class="project-card tilt-card" data-tags="BusinessCentral,Projektleitung">
+      <div class="project-card tilt-card" id="proj-florapharm" data-tags="BusinessCentral,Projektleitung">
         <div class="project-title">Business Central Einführung</div>
         <div class="project-meta">2021 · Florapharm</div>
         <div class="project-description">Inhouse Projektleitung für vollständige BC Implementation. Digitalisierung von Geschäftsprozessen und Change Management.</div>
         <div class="project-tech"><span class="skill-tag">Business Central</span><span class="skill-tag">Projektleitung</span><span class="skill-tag">Digitalisierung</span></div>
       </div>
-      <div class="project-card tilt-card" data-tags="NAV,DMS,Consulting">
+      <div class="project-card tilt-card" id="proj-cosmo" data-tags="NAV,DMS,Consulting">
         <div class="project-title">Hans Keim GmbH – ERP Implementation</div>
         <div class="project-meta">2018 – 2021 · COSMO CONSULT</div>
         <div class="project-description">Teilprojektleitung NAV/BC. Verantwortlich für Einkauf, Verkauf, Logistik sowie cc|DMS, cc|Document Configurator, cc|Workflow.</div>
         <div class="project-tech"><span class="skill-tag">NAV/BC</span><span class="skill-tag">cc|DMS</span><span class="skill-tag">cc|Workflow</span><span class="skill-tag">Schulungen</span></div>
       </div>
-      <div class="project-card tilt-card" data-tags="ECommerce,NAV,Integration">
+      <div class="project-card tilt-card" id="proj-ecommerce" data-tags="ECommerce,NAV,Integration">
         <div class="project-title">E-Commerce Integration</div>
         <div class="project-meta">2018 · Dynamic Commerce</div>
         <div class="project-description">Schnittstelle zwischen NAV ERP und E-Commerce Plattform. Fachliche Projektleitung mit 24/7 Support-Konzept.</div>
         <div class="project-tech"><span class="skill-tag">MS Dynamics NAV</span><span class="skill-tag">E-Commerce</span><span class="skill-tag">Schnittstellen</span><span class="skill-tag">24/7 Support</span></div>
       </div>
-      <div class="project-card tilt-card" data-tags="IFS,Automotive">
+      <div class="project-card tilt-card" id="proj-ifs" data-tags="IFS,Automotive">
         <div class="project-title">Audi Motorsport</div>
         <div class="project-meta">2017 · IFS Applications</div>
         <div class="project-description">Junior Consultant für IFS Applications im Bereich Produktion &amp; Service. Spezifikationen, Testing, Dokumentation und erste Anwenderschulungen.</div>
@@ -717,7 +743,27 @@ let rIdx=0,cIdx=0,deleting=false;
 function typeStep(){const roles=currentLang==='de'?ROLES_DE:ROLES_EN;const current=roles[rIdx%roles.length];const el=document.getElementById('typing-tagline');if(!el)return;if(deleting){cIdx--;el.textContent=current.slice(0,cIdx);if(cIdx===0){deleting=false;rIdx++;setTimeout(typeStep,420);return;}setTimeout(typeStep,42);}else{cIdx++;el.textContent=current.slice(0,cIdx);if(cIdx===current.length){deleting=true;setTimeout(typeStep,2400);return;}setTimeout(typeStep,72);}}
 setTimeout(typeStep,900);
 
-/* ── Project Filter ─────────────────────────────── */
+/* ── Timeline → Project Link ────────────────────── */
+function goToProject(projectId){
+  showTab('projects');
+  // Filter zurücksetzen auf "Alle"
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  const allBtn=document.querySelector('.filter-btn[data-filter="all"]');
+  if(allBtn)allBtn.classList.add('active');
+  document.querySelectorAll('.project-card').forEach(c=>c.classList.remove('hidden'));
+  // Zur Karte scrollen + Highlight
+  setTimeout(()=>{
+    const card=document.getElementById(projectId);
+    if(!card)return;
+    card.classList.remove('highlighted');
+    void card.offsetWidth; // reflow
+    card.classList.add('highlighted');
+    card.scrollIntoView({behavior:'smooth',block:'center'});
+    setTimeout(()=>card.classList.remove('highlighted'),1200);
+  },80);
+}
+
+
 function filterProjects(btn){document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');const filter=btn.dataset.filter;document.querySelectorAll('.project-card').forEach(card=>{if(filter==='all'){card.classList.remove('hidden');}else{card.classList.toggle('hidden',!(card.dataset.tags||'').includes(filter));}});}
 
 /* ── 3D Tilt ────────────────────────────────────── */
